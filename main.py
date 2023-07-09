@@ -19,6 +19,7 @@ ch = "https://t.me/Professor_Ashu"
 ID = "5276901951"
 token = "5276901951:AAGk3pN8m7CX62I5G4WReam27Cc4FZ3bCpo"
 log_channel = "@YourLogChannel"  # Replace with your log channel username or ID
+bot_username = "@YourBotUsername"  # Replace with your bot username
 
 # MongoDB configuration
 mongo_uri = "mongodb://localhost:27017"  # Replace with your MongoDB URI
@@ -81,15 +82,15 @@ async def process_card(app, collection, telegraph, cc):
             telegraph_url = f"https://telegra.ph/{page['path']}"
 
             # Create an InlineKeyboardMarkup with the button
-            button_text = "Click Here"
-            button_url = telegraph_url
+            button_text = "Access Bot"
+            button_url = f"https://t.me/{bot_username}"
             keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(button_text, url=button_url)]])
 
             # Send the welcome message with the button to the log channel
             await app.send_message(log_channel, mgs, reply_markup=keyboard)
 
             # Send the welcome message to the user
-            await app.send_message(ch, f"Welcome to the Bot!\nClick the button below to proceed.", reply_markup=keyboard)
+            await app.send_message(ch, f"Welcome to the Bot!\nClick the button below to access the bot.", reply_markup=keyboard)
 
             time.sleep(1)
         else:
@@ -110,3 +111,4 @@ async def process_card(app, collection, telegraph, cc):
 
 # Run the fetch_cards_from_channel function
 await fetch_cards_from_channel()
+
