@@ -1,0 +1,7 @@
+build:
+  config:
+    # Set the Python version
+    python-version: 3.9.5
+
+run:
+  web: python main.py
