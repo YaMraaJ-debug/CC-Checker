@@ -7,6 +7,7 @@ from pymongo import MongoClient
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import requests
 from telegraph import Telegraph
+from config import API_ID, API_HASH, PHONE_NUMBER, CHANNEL, LOG_CHANNEL, BOT_USERNAME, MONGO_URI, DATABASE_NAME, COLLECTION_NAME, TELEGRAPH_TOKEN
 
 Z = '\033[1;31m'
 X = '\033[1;33m'
