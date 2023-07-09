@@ -101,4 +101,5 @@ async def help_command(_, message):
     await message.reply_text(help_text)
 
 # Run the fetch_cards_from_channel function
-await fetch_cards_from_channel()
+with Client("session", API_ID, API_HASH) as app:
+    app.run(fetch_cards_from_channel())
