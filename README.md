@@ -23,6 +23,9 @@ Before running the bot, make sure you have the following prerequisites installed
    pip install -r requirements.txt
 
 ##Configuration
+
+
+
 1.Open the config.py file in a text editor.
 
 2.Replace the following placeholders with your own values:
@@ -40,6 +43,9 @@ TELEGRAPH_TOKEN: Your Telegraph token obtained from the Telegraph API platform.
 
 
 ##Usage
+
+
+
 1.Run the bot using the following command:
 
    python bot.py
@@ -49,9 +55,13 @@ TELEGRAPH_TOKEN: Your Telegraph token obtained from the Telegraph API platform.
 3.The bot will also send a welcome message with a button to the log channel and the user. The user can click the button to access the bot.
 
 ##Contributing
+
+
 Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
 
 ##License
+
+
 This project is licensed under the MIT License.
 
 
