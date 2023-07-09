@@ -6,43 +6,22 @@ from pyrogram import Client, filters
 from pymongo import MongoClient
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import requests
-from telegraph import Telegraph
-from config import API_ID, API_HASH, PHONE_NUMBER, CHANNEL, LOG_CHANNEL, BOT_USERNAME, MONGO_URI, DATABASE_NAME, COLLECTION_NAME, TELEGRAPH_TOKEN
+from config import API_ID, API_HASH, PHONE_NUMBER, CHANNEL, LOG_CHANNEL, BOT_USERNAME, MONGO_URI, DATABASE_NAME, COLLECTION_NAME, PIC_URL
 
 Z = '\033[1;31m'
 X = '\033[1;33m'
 F = '\033[2;32m'
 
-api_id = "18189325"
-api_hash = "7cb3b3ea70ba49f0721a511013eefe53"
-phone_number = "201011234195"
-ch = "https://t.me/Professor_Ashu"
-ID = "5276901951"
-token = "5276901951:AAGk3pN8m7CX62I5G4WReam27Cc4FZ3bCpo"
-log_channel = "@YourLogChannel"  # Replace with your log channel username or ID
-bot_username = "@YourBotUsername"  # Replace with your bot username
-
-# MongoDB configuration
-mongo_uri = "mongodb://localhost:27017"  # Replace with your MongoDB URI
-database_name = "telegram_bot"  # Replace with your desired database name
-collection_name = "bot_data"  # Replace with your desired collection name
-
-# Telegraph configuration
-telegraph_token = "your_telegraph_token"  # Replace with your Telegraph token
-
 async def fetch_cards_from_channel():
     # Initialize MongoDB client
-    mongo_client = MongoClient(mongo_uri)
-    db = mongo_client[database_name]
-    collection = db[collection_name]
+    mongo_client = MongoClient(MONGO_URI)
+    db = mongo_client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
 
-    # Initialize Telegraph client
-    telegraph = Telegraph(telegraph_token)
-
-    app = Client("session", api_id, api_hash)
+    app = Client("session", API_ID, API_HASH)
     await app.start()
 
-    entity = await app.resolve_peer(ch)
+    entity = await app.resolve_peer(CHANNEL)
     channel = entity.input_channel
 
     messages = await app.get_chat_history(channel, limit=2000)
@@ -54,16 +33,16 @@ async def fetch_cards_from_channel():
         if message.text:
             matches = re.findall(card_regex, message.text) or re.findall(card_regex2, message.text)
             for match in matches:
-                await process_card(app, collection, telegraph, match)
+                await process_card(app, collection, match)
 
     await app.stop()
     mongo_client.close()
 
-async def process_card(app, collection, telegraph, cc):
+async def process_card(app, collection, cc):
     try:
-        await app.send_message(ch, f"/tele {cc}")
+        await app.send_message(CHANNEL, f"/tele {cc}")
         time.sleep(random.randint(26, 27))
-        messages = await app.get_chat_history(ch, limit=1)
+        messages = await app.get_chat_history(CHANNEL, limit=1)
         ccn = messages[0].text
         print(ccn)
         if "APPROVED" in ccn:
@@ -74,24 +53,16 @@ async def process_card(app, collection, telegraph, cc):
 ━━━━━━━━━━━━━━━
 𝗖𝗛𝗘𝗞𝗘𝗗 𝗕𝗬"@T4_Mohamed ✨🤍 '''
 
-            # Create a Telegraph page with the welcome message and button
-            page_title = "Welcome"
-            page_content = f"<h3>Welcome to the Bot!</h3><p>{ccn}</p>"
-            page = telegraph.create_page(page_title, html_content=page_content)
-
-            # Generate the telegraph URL
-            telegraph_url = f"https://telegra.ph/{page['path']}"
-
             # Create an InlineKeyboardMarkup with the button
             button_text = "Access Bot"
-            button_url = f"https://t.me/{bot_username}"
+            button_url = f"https://t.me/{BOT_USERNAME}"
             keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(button_text, url=button_url)]])
 
-            # Send the welcome message with the button to the log channel
-            await app.send_message(log_channel, mgs, reply_markup=keyboard)
+            # Send the welcome message with the picture and button to the log channel
+            await app.send_photo(LOG_CHANNEL, PIC_URL, caption=mgs, reply_markup=keyboard)
 
             # Send the welcome message to the user
-            await app.send_message(ch, f"Welcome to the Bot!\nClick the button below to access the bot.", reply_markup=keyboard)
+            await app.send_message(CHANNEL, f"Welcome to the Bot!\nClick the button below to access the bot.", reply_markup=keyboard)
 
             time.sleep(1)
         else:
@@ -110,6 +81,24 @@ async def process_card(app, collection, telegraph, cc):
         print("New message:", ccn)
         print(str(e))
 
+async def send_to_log_channel(app, message):
+    # Forward the message to the log channel
+    await app.forward_messages(LOG_CHANNEL, message.chat.id, message.message_id)
+
+# Help command handler
+@app.on_message(filters.command("help"))
+async def help_command(_, message):
+    help_text = """
+    Welcome to the Bot!
+    
+    Available commands:
+    /help - Show this help message
+    /start - Start the bot
+    /info - Show bot information
+    
+    Enjoy using the bot!
+    """
+    await message.reply_text(help_text)
+
 # Run the fetch_cards_from_channel function
 await fetch_cards_from_channel()
-
