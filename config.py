@@ -13,5 +13,5 @@ MONGO_URI = "mongodb://localhost:27017"  # Your MongoDB connection URI
 DATABASE_NAME = "telegram_bot"  # The name of the MongoDB database
 COLLECTION_NAME = "bot_data"  # The name of the MongoDB collection
 
-# Telegraph configuration
-TELEGRAPH_TOKEN = "YOUR_TELEGRAPH_TOKEN"  # Your Telegraph token obtained from the Telegraph API platform
+# Picture configuration
+PIC_URL = "https://example.com/your_picture.jpg"  # The URL of the picture to include
