@@ -22,7 +22,7 @@ Before running the bot, make sure you have the following prerequisites installed
 2. Install the required packages:
    pip install -r requirements.txt
 
-Configuration
+##Configuration
 1.Open the config.py file in a text editor.
 
 2.Replace the following placeholders with your own values:
@@ -39,7 +39,7 @@ COLLECTION_NAME: The name of the MongoDB collection to use.
 TELEGRAPH_TOKEN: Your Telegraph token obtained from the Telegraph API platform.
 
 
-Usage
+##Usage
 1.Run the bot using the following command:
 
    python bot.py
@@ -48,10 +48,10 @@ Usage
 
 3.The bot will also send a welcome message with a button to the log channel and the user. The user can click the button to access the bot.
 
-Contributing
+##Contributing
 Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to open an issue or submit a pull request.
 
-License
+##License
 This project is licensed under the MIT License.
 
 
