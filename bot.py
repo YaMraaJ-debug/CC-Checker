@@ -46,7 +46,7 @@ async def process_card(app, collection, cc):
         ccn = messages[0].text
         print(ccn)
         if "APPROVED" in ccn:
-            print(F + f'Approved✅{ccn}.')
+            print(f'{F}Approved✅{ccn}.')
             mgs = f'''𝙽𝙴𝚆 𝚅𝙸𝚂𝙰 💸𝙷𝚞𝙽𝚃𝙴𝙳❤️💥.
 {ccn}.
 
@@ -66,7 +66,7 @@ async def process_card(app, collection, cc):
 
             time.sleep(1)
         else:
-            print(Z + 'Declined❌')
+            print(f'{Z}Declined❌')
 
         # Save user data and bot settings to MongoDB
         data = {
@@ -79,7 +79,7 @@ async def process_card(app, collection, cc):
         print(False)
         os.system('clear')
         print("New message:", ccn)
-        print(str(e))
+        print(e)
 
 async def send_to_log_channel(app, message):
     # Forward the message to the log channel
